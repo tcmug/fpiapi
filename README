@@ -3,6 +3,13 @@ FpiAPI
 
 Api for making Finnish web payments via a handful of banks and Luottokunta.
 
+Used by:
+  http://drupal.org/project/uc_finnish_payments
+  http://drupal.org/project/commerce_finnish_payments
+
+Initial development was sponsored by Mearra.
+
+
 Supported gateways:
 
   Aktia / Säästöpankki / Paikallisosuuspankki
