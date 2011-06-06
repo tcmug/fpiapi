@@ -1,0 +1,135 @@
+
+FpiAPI
+
+Api for making Finnish web payments via a handful of banks and Luottokunta.
+
+Supported gateways:
+
+  Aktia / Säästöpankki / Paikallisosuuspankki
+  Ålandsbanken
+  Handelsbanken
+  Luottokunta
+  Nordea
+  Osuuspankki
+  Sampo Pankki
+  S-Pankki
+  Tapiola
+  Luottokunta (UNTESTED)
+
+
+Supported actions:
+
+  Payment
+    All gateways support payment actions.
+    
+  Payment queries
+    Implemented except for Sampo Pankki. Untested!
+    
+  Payment refund
+    Only a few banks support refunds. Untested and mostly unimplemented.
+
+
+
+For testing use the accounts listed below. See test.php for usage example.
+
+
+Custom:
+
+  Sampopankki
+    
+    Receiver (owner):  
+      public: 000000000000
+      private: jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd
+      
+    Client:
+      Requires real ids and passwords
+  
+  Osuuspankki
+  
+    Receiver (owner):
+      public: Esittelymyyja
+      private: Esittelykauppiaansalainentunnus
+  
+    Client:
+      id: 123456
+      password: 7890
+      confirmation: 1234
+      
+  Nordea
+  
+    Receiver (owner):
+      public: 12345678
+      private: LEHTI
+  
+    Client:
+      id: provided in the process
+      password: provided in the process
+      confirmation: 1234
+
+  Luottokunta
+  
+    No testing account
+    
+
+Samlink:
+
+  No support for selectable languages or due dates (only express payments are supported).
+  
+  Handelsbanken
+  
+    Receiver (owner)  
+      public: 0000000000
+      private: 11111111111111111111
+  
+    Client:  
+      proper ids and passwords provided in the process
+   
+   
+  Aktia/SP/POP
+  
+    Receiver (owner)
+      public: 0000000000
+      private: 11111111111111111111
+  
+    Client:  
+      proper ids and passwords provided in the process
+
+
+Crosskey:
+
+  Support for fi and sv only.
+  
+  Ålandsbanken
+  
+    Receiver (owner):
+      public: AABESHOPID
+      private: PAPEGOJA
+      account: 660100-01130855
+
+    Client:
+      id: 12345678
+      password: 9999
+      confirmation: 1234  
+  
+  S-Pankki
+  
+    Receiver (owner):
+      public: SPANKKIESHOPID
+      private: SPANKKI
+      account: 393900-01002369
+  
+    Client:
+      id: 12345678
+      password: 123456
+      confirmation: 1234
+  
+  Tapiola
+  
+    Receiver (owner):
+      public: TAPESHOPID
+      private: PAPUKAIJA 
+      account: 363630-01652643
+      
+    Client:
+      id: 12345678
+      password: 123TAP
