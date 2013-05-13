@@ -204,7 +204,7 @@ class FpiapiGateway {
    */
   public function checkFields(array $fields) {
   	foreach ($fields as $k => $v) {
-  	  if (empty($v)) {
+  	  if (!isset($v) || $v == "") {
   	  	return FALSE;
   	  }
   	}
