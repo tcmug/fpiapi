@@ -73,10 +73,10 @@ class FpiapiGatewayCrosskey extends FpiapiGateway {
     $params = &$_REQUEST;
      
     $fields = array(
-      $params['AAB-RETURN-VERSION'],
+      isset($params['AAB-RETURN-VERSION']) ? $params['AAB-RETURN-VERSION'] : NULL,
       $this->transaction->getUid(),
       $this->transaction->getReferenceNumber(),
-      $params['AAB-RETURN-PAID'],
+      isset($params['AAB-RETURN-PAID']) ? $params['AAB-RETURN-PAID'] : NULL,
     );
     
     if (!$this->checkFields($fields)) {
@@ -140,22 +140,22 @@ class FpiapiGatewayCrosskey extends FpiapiGateway {
     $params = &$_REQUEST;
     
     $fields = array(
-      $params["CBS_VERSION"],
-      $params["CBS_TIMESTMP"],
-      $params["CBS_RCV_ID"],
-      $params["CBS_RESPCODE"],
-      $params["CBS_STAMP"],
-      $params["CBS_REF"],
-      $params["CBS_AMOUNT"],
-      $params["CBS_CUR"],
-      $params["CBS_PAID"],
-      $params["CBS_ALG"],
+      isset($params["CBS_VERSION"]) ? $params["CBS_VERSION"] : NULL,
+      isset($params["CBS_TIMESTMP"]) ? $params["CBS_TIMESTMP"] : NULL,
+      isset($params["CBS_RCV_ID"]) ? $params["CBS_RCV_ID"] : NULL,
+      isset($params["CBS_RESPCODE"]) ? $params["CBS_RESPCODE"] : NULL,
+      isset($params["CBS_STAMP"]) ? $params["CBS_STAMP"] : NULL,
+      isset($params["CBS_REF"]) ? $params["CBS_REF"] : NULL,
+      isset($params["CBS_AMOUNT"]) ? $params["CBS_AMOUNT"] : NULL,
+      isset($params["CBS_CUR"]) ? $params["CBS_CUR"] : NULL,
+      isset($params["CBS_PAID"]) ? $params["CBS_PAID"] : NULL,
+      isset($params["CBS_ALG"]) ? $params["CBS_ALG"] : NULL,
     );
    
     $mac = implode('&', $fields) . "&" . $this->configuration['privateKey'] . "&";
     $mac = strtoupper(md5($mac));
     
-    if ($mac != $params['CBS_MAC']) {
+    if (!isset($params['CBS_MAC']) || $mac != $params['CBS_MAC']) {
        throw new FpiapiException("MAC mismatch", FPIAPI_EXCEPTION_MAC_ERROR);
     }
     

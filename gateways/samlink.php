@@ -18,6 +18,7 @@ class FpiapiGatewaySamlink extends FpiapiGateway {
     $this->queryUrl = '';
     $this->hasPaymentAbility = true;
     $this->hasQueryAbility = true;
+    $this->hasRefundAbility = false;
   }
   
   /**
@@ -61,10 +62,10 @@ class FpiapiGatewaySamlink extends FpiapiGateway {
     $params = &$_REQUEST;
       
     $fields = array(
-      $params['NET_RETURN_VERSION'],
+      isset($params['NET_RETURN_VERSION']) ? $params['NET_RETURN_VERSION'] : NULL,
       $this->transaction->getUid(),
       $this->transaction->getReferenceNumber(),
-      $params['NET_RETURN_PAID'],
+      isset($params['NET_RETURN_PAID']) ? $params['NET_RETURN_PAID'] : NULL,
       $this->configuration['privateKey']
     );
     

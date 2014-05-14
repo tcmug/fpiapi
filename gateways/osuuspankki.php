@@ -60,11 +60,11 @@ class FpiapiGatewayOsuuspankki extends FpiapiGateway {
     $params = &$_REQUEST;
      
     $fields = array(
-      $params['VERSIO'],
+      isset($params['VERSIO']) ? $params['VERSIO'] : NULL,
       $this->transaction->getUid(),
       $this->transaction->getReferenceNumber(),
-      $params['ARKISTOINTITUNNUS'],
-      $params['TARKISTE-VERSIO'],
+      isset($params['ARKISTOINTITUNNUS']) ? $params['ARKISTOINTITUNNUS'] : NULL,
+      isset($params['TARKISTE-VERSIO']) ? $params['TARKISTE-VERSIO'] : NULL,
     );
 
     if (!$this->checkFields($fields)) {
@@ -122,16 +122,16 @@ class FpiapiGatewayOsuuspankki extends FpiapiGateway {
     }
       
     $fields = array(
-      $params['VERSIO'], 
-      $params['MYYJA'],
-      $params['KYSELYTUNNUS'],
-      $params['VASTAUSKOODI'],
-      $params['MAKSUTUNNUS'],
-      $params['VIITE'],
-      $params['SUMMA'],
-      $params['VALUUTTALAJI'],
-      $params['ARKISTOINTITUNNUS'],
-      $params['TARKISTE-VERSIO'],
+      isset($params['VERSIO']) ? $params['VERSIO'] : NULL,
+      isset($params['MYYJA']) ? $params['MYYJA'] : NULL,
+      isset($params['KYSELYTUNNUS']) ? $params['KYSELYTUNNUS'] : NULL,
+      isset($params['VASTAUSKOODI']) ? $params['VASTAUSKOODI'] : NULL,
+      isset($params['MAKSUTUNNUS']) ? $params['MAKSUTUNNUS'] : NULL,
+      isset($params['VIITE']) ? $params['VIITE'] : NULL,
+      isset($params['SUMMA']) ? $params['SUMMA'] : NULL,
+      isset($params['VALUUTTALAJI']) ? $params['VALUUTTALAJI'] : NULL,
+      isset($params['ARKISTOINTITUNNUS']) ? $params['ARKISTOINTITUNNUS'] : NULL,
+      isset($params['TARKISTE-VERSIO']) ? $params['TARKISTE-VERSIO'] : NULL,
       $this->configuration['privateKey']
     );
 
@@ -140,11 +140,11 @@ class FpiapiGatewayOsuuspankki extends FpiapiGateway {
     $mac = implode('', $fields);
     $mac = strtoupper(md5($mac));
     
-    if ($mac != $params['TARKISTE']) {
+    if (!isset($params['TARKISTE']) || $mac != $params['TARKISTE']) {
       throw new FpiapiException("MAC mismatch", FPIAPI_EXCEPTION_MAC_ERROR);
     }
     
-    switch ($params['VASTAUSKOODI']) {
+    switch (isset($params['VASTAUSKOODI']) ? $params['VASTAUSKOODI'] : NULL) {
       case '0000':
        break;
       case '0001':

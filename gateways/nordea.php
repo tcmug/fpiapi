@@ -74,10 +74,10 @@ class FpiapiGatewayNordea extends FpiapiGateway {
     $params = &$_REQUEST;
       
     $fields = array(
-      $params['RETURN_VERSION'],
+      isset($params['RETURN_VERSION']) ? $params['RETURN_VERSION'] : NULL,
       $this->transaction->getUid(),
       $this->transaction->getReferenceNumber(),
-      $params['RETURN_PAID']
+      isset($params['RETURN_PAID']) ? $params['RETURN_PAID'] : NULL
     );
  
     if (!$this->checkFields($fields)) {
@@ -134,14 +134,14 @@ class FpiapiGatewayNordea extends FpiapiGateway {
     $params = &$_REQUEST;
     
     $fields = array(
-      $params["SOLOPMT_VERSION"],
-      $params["SOLOPMT_TIMESTMP"],
-      $params["SOLOPMT_RCV_ID"],
-      $params["SOLOPMT_RESPCODE"],
-      $params["SOLOPMT_STAMP"],
-      $params["SOLOPMT_REF"],
-      $params["SOLOPMT_KEYVERS"],
-      $params["SOLOPMT_ALG"]     
+      isset($params["SOLOPMT_VERSION"]) ? $params["SOLOPMT_VERSION"] : NULL,
+      isset($params["SOLOPMT_TIMESTMP"]) ? $params["SOLOPMT_TIMESTMP"] : NULL,
+      isset($params["SOLOPMT_RCV_ID"]) ? $params["SOLOPMT_RCV_ID"] : NULL,
+      isset($params["SOLOPMT_RESPCODE"]) ? $params["SOLOPMT_RESPCODE"] : NULL,
+      isset($params["SOLOPMT_STAMP"]) ? $params["SOLOPMT_STAMP"] : NULL,
+      isset($params["SOLOPMT_REF"]) ? $params["SOLOPMT_REF"] : NULL,
+      isset($params["SOLOPMT_KEYVERS"]) ? $params["SOLOPMT_KEYVERS"] : NULL,
+      isset($params["SOLOPMT_ALG"]) ? $params["SOLOPMT_ALG"] : NULL,
     );
     
     $fields = $this->filterEmptyFields($fields);
@@ -149,10 +149,9 @@ class FpiapiGatewayNordea extends FpiapiGateway {
     $mac = implode('&', $fields) . "&" . $this->configuration['privateKey'] . "&";
     $mac = strtoupper(md5($mac));
     
-    if ($mac != $params['SOLOPMT_MAC']) {
+    if (!isset($params['SOLOPMT_MAC']) || $mac != $params['SOLOPMT_MAC']) {
        throw new FpiapiException("MAC mismatch", FPIAPI_EXCEPTION_MAC_ERROR);
     }
-    
     
     switch ($params['SOLOPMT_RESPCODE']) {
       case 'Notfound':

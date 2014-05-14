@@ -1,9 +1,9 @@
 <?php
 /**
- * Gateway for Sampopankki
+ * Gateway for Danskebank
  */
 
-class FpiapiGatewaySampopankki extends FpiapiGateway {
+class FpiapiGatewayDanskebank extends FpiapiGateway {
   
   /**
    * Constructor
@@ -15,6 +15,7 @@ class FpiapiGatewaySampopankki extends FpiapiGateway {
     $this->queryUrl = 'https://netbank.danskebank.dk/HB';
     $this->hasPaymentAbility = true;
     $this->hasQueryAbility = false; //true;
+    $this->configuration['version'] = 3;
   }
   
   
@@ -29,15 +30,23 @@ class FpiapiGatewaySampopankki extends FpiapiGateway {
       'SUMMA'    => $this->transaction->getSum(),
       'VIITE'    => $this->transaction->getReferenceNumber(),
       'KNRO'     => $this->configuration['publicKey'],
-      'VERSIO'   => "3",
+      'VERSIO'   => $this->configuration['version'],
       'VALUUTTA' => $this->getCurrency(),
       'OKURL'    => $this->getReturnUrl(),
       'VIRHEURL' => $this->getErrorUrl()
     );
     
     // Calculate mac accordingly...
-    $mac = $this->configuration['privateKey'] . implode('', $fields);
-    $mac = strtolower(md5($mac));
+    switch ($fields['VERSIO']) {
+      case 3:
+        $mac = $this->configuration['privateKey'] . implode('', $fields);
+        $mac = strtoupper(md5($mac));
+      break;
+      case 4:
+        $mac = $this->configuration['privateKey'] . implode('&', $fields);
+        $mac = strtolower(hash('sha256', $mac));
+      break;
+    }
     
     $fields['TARKISTE'] = $mac;
     
@@ -71,7 +80,7 @@ class FpiapiGatewaySampopankki extends FpiapiGateway {
       isset($params['SUMMA']) ? $params['SUMMA'] : NULL,
       isset($params['STATUS']) ? $params['STATUS'] : NULL,
       $this->configuration['publicKey'],
-      3,
+      $this->configuration['version'],
       isset($params['VALUUTTA']) ? $params['VALUUTTA'] : NULL
     );
     

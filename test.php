@@ -8,7 +8,7 @@ session_start();
 
 include "fpiapi.php";
 
-if ($_GET['gt'])
+if (isset($_GET['gt']))
   $gatewayName = $_GET['gt'];
 else
   $gatewayName = $_SESSION['gateway'];
@@ -16,6 +16,14 @@ else
 $_SESSION['gateway'] = $gatewayName;
   
 $banks = array(
+
+  "danskebank" => array(
+    "publicKey" => "000000000000",
+    "privateKey" => "jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd",
+    "merchantId" => "00123456800",
+    "contractNumber" => "123456",
+    "version" => 4,
+  ),
 
   "sampopankki" => array(
     "publicKey" => "000000000000",
@@ -41,7 +49,9 @@ $banks = array(
   
   "nordea" => array(
     "publicKey" => "12345678",
-    "privateKey" => "LEHTI"
+    "privateKey" => "LEHTI",
+    "accountNumber" => "123",
+    "accountName" => "Testailija",
   ),
   
   "spankki" => array(
@@ -93,19 +103,21 @@ $t->setReferencePaddingLength(0);
 
 $gateway = FpiapiFactory::getGateway($gatewayName);
 
+$host = 'http://' . $_SERVER['HTTP_HOST'] . '/';
+
 $gateway->setCurrency("EUR");
 $gateway->setConfiguration($banks[$gatewayName]);
 $gateway->setTransaction($t);
-$gateway->setReturnUrl("http://devvy/sites/all/modules/uc_finnish_payments/fpiapi/test.php?ok=1");
-$gateway->setErrorUrl("http://devvy/sites/all/modules/uc_finnish_payments/fpiapi/test.php?error=1");
+$gateway->setReturnUrl($host . "?ok=1");
+$gateway->setErrorUrl($host . "?error=1");
 
 $gateway->setLanguage("fi");
 
 try {
   
-  if ($qr = $gateway->getQueryResult()) {
-    var_dump($qr);
-  }
+  // if ($qr = $gateway->getQueryResult()) {
+  //   var_dump($qr);
+  // }
   
   if ($gateway->isPaymentCompleted()) {
   

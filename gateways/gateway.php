@@ -124,7 +124,15 @@ class FpiapiGateway {
   public function setTransaction(FpiapiTransaction $t) {
     $this->transaction = $t;
   }
-  
+
+  /**
+   * getConfiguration
+   * Get configuration for the bank
+   * @param array $config
+   */
+  public function getConfiguration($config) {
+    return $this->configuration;
+  }  
   
   /**
    * setConfiguration
