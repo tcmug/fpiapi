@@ -37,13 +37,13 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
     );
     
     // Calculate mac accordingly...
-    switch ($fields['VERSIO']) {
+    switch ($params['VERSIO']) {
       case 3:
         $mac = $this->configuration['privateKey'] . implode('', $fields);
         $mac = strtoupper(md5($mac));
       break;
       case 4:
-        $mac = $this->configuration['privateKey'] . implode('&', $fields);
+        $mac = $this->configuration['privateKey'] . '&' . implode('&', $fields) . '&';
         $mac = strtolower(hash('sha256', $mac));
       break;
     }
@@ -80,7 +80,7 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
       isset($params['SUMMA']) ? $params['SUMMA'] : NULL,
       isset($params['STATUS']) ? $params['STATUS'] : NULL,
       $this->configuration['publicKey'],
-      $this->configuration['version'],
+      isset($params['VERSIO']) ? $params['VERSIO'] : NULL,
       isset($params['VALUUTTA']) ? $params['VALUUTTA'] : NULL
     );
     
@@ -91,9 +91,20 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
     if ($this->getCurrency() != $params['VALUUTTA']) {
       return false;
     }
+
+    switch ($params['VERSIO']) {
+      case 3:
+        $mac = $this->configuration['privateKey'] . implode('', $fields);
+        $mac = strtoupper(md5($mac));
+      break;
+      case 4:
+        $mac = $this->configuration['privateKey'] . '&' . implode('&', $fields) . '&';
+        $mac = strtolower(hash('sha256', $mac));
+      break;
+    }
     
-    $mac = $this->configuration['privateKey'] . implode('', $fields);
-    $mac = strtoupper(md5($mac));
+//    $mac = $this->configuration['privateKey'] . implode('', $fields);
+//    $mac = strtoupper(md5($mac));
      
     return $mac == $params['TARKISTE'];
 
