@@ -42,7 +42,16 @@ For testing use the accounts listed below. See test.php for usage example.
 
 Custom:
 
-  Sampopankki
+  Danskebank: 
+    
+    Receiver (owner):  
+      public: 000000000000
+      private: jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd
+      
+    Client:
+      Requires real ids and passwords
+
+  Sampopankki 
     
     Receiver (owner):  
       public: 000000000000
