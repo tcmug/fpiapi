@@ -11,7 +11,7 @@ include "fpiapi.php";
 if (isset($_GET['gt']))
   $gatewayName = $_GET['gt'];
 else
-  $gatewayName = $_SESSION['gateway'];
+  $gatewayName = isset($_SESSION['gateway']) ? $_SESSION['gateway'] : '';
 
 $_SESSION['gateway'] = $gatewayName;
   
@@ -23,13 +23,6 @@ $banks = array(
     "merchantId" => "00123456800",
     "contractNumber" => "123456",
     "version" => 4,
-  ),
-
-  "sampopankki" => array(
-    "publicKey" => "000000000000",
-    "privateKey" => "jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd",
-  	"merchantId" => "00123456800",
-    "contractNumber" => "123456"
   ),
   
   "aktiasppop" => array(

@@ -11,11 +11,10 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
   public function __construct() {
     parent::__construct();
     $this->name = "Sampo Pankki";
-    $this->postUrl = 'https://verkkopankki.sampopankki.fi/SP/vemaha/VemahaApp';
+    $this->postUrl = 'https://verkkopankki.danskebank.fi/SP/vemaha/VemahaApp';
     $this->queryUrl = 'https://netbank.danskebank.dk/HB';
     $this->hasPaymentAbility = true;
     $this->hasQueryAbility = false; //true;
-    $this->configuration['version'] = 3;
   }
   
   
@@ -24,36 +23,27 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
    * @see fpiapi/gateways/FpiapiGateway::getPaymentFields()
    */
   public function getPaymentFields() {
-    
-    // First fill in the field used to calculate mac
+
     $fields = array(
       'SUMMA'    => $this->transaction->getSum(),
       'VIITE'    => $this->transaction->getReferenceNumber(),
       'KNRO'     => $this->configuration['publicKey'],
-      'VERSIO'   => $this->configuration['version'],
+      'VERSIO'   => '4',
       'VALUUTTA' => $this->getCurrency(),
       'OKURL'    => $this->getReturnUrl(),
-      'VIRHEURL' => $this->getErrorUrl()
+      'VIRHEURL' => $this->getErrorUrl(),
     );
-    
-    // Calculate mac accordingly...
-    switch ($params['VERSIO']) {
-      case 3:
-        $mac = $this->configuration['privateKey'] . implode('', $fields);
-        $mac = strtoupper(md5($mac));
-      break;
-      case 4:
-        $mac = $this->configuration['privateKey'] . '&' . implode('&', $fields) . '&';
-        $mac = strtolower(hash('sha256', $mac));
-      break;
-    }
-    
-    $fields['TARKISTE'] = $mac;
-    
+
     $due = $this->transaction->getDueDate();
     
-    if (!empty($due))
+    if (!empty($due)) {
       $fields['ERAPAIVA'] = date("d.m.Y", strtotime($due));
+    }
+
+    $mac = $this->configuration['privateKey'] . '&' . implode('&', $fields) . '&';
+    $mac = strtolower(hash('sha256', $mac));
+    
+    $fields['TARKISTE'] = $mac;
 
     $codes = array(
       "fi" => "1",
@@ -62,7 +52,9 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
     );
     
     $fields['lng'] = $codes[$this->getLanguage()];
-      
+
+    $fields['ALG'] = '03';
+
     return $fields;
   }
   
@@ -81,7 +73,8 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
       isset($params['STATUS']) ? $params['STATUS'] : NULL,
       $this->configuration['publicKey'],
       isset($params['VERSIO']) ? $params['VERSIO'] : NULL,
-      isset($params['VALUUTTA']) ? $params['VALUUTTA'] : NULL
+      isset($params['VALUUTTA']) ? $params['VALUUTTA'] : NULL,
+      isset($params['ERAPAIVA']) ? $params['ERAPAIVA'] : NULL,
     );
     
     if (!$this->checkFields($fields)) {
@@ -92,20 +85,9 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
       return false;
     }
 
-    switch ($params['VERSIO']) {
-      case 3:
-        $mac = $this->configuration['privateKey'] . implode('', $fields);
-        $mac = strtoupper(md5($mac));
-      break;
-      case 4:
-        $mac = $this->configuration['privateKey'] . '&' . implode('&', $fields) . '&';
-        $mac = strtolower(hash('sha256', $mac));
-      break;
-    }
-    
-//    $mac = $this->configuration['privateKey'] . implode('', $fields);
-//    $mac = strtoupper(md5($mac));
-     
+    $mac = $this->configuration['privateKey'] . '&' . implode('&', $fields) . '&';
+    $mac = strtolower(hash('sha256', $mac));
+
     return $mac == $params['TARKISTE'];
 
   }
