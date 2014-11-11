@@ -5,7 +5,7 @@
 
 require_once "samlink.php";
 
-class FpiapiGatewayPOP extends FpiapiGatewaySamlink {
+class FpiapiGatewayPop extends FpiapiGatewaySamlink {
   
   /**
    * Constructor
