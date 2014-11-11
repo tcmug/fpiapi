@@ -74,7 +74,7 @@ class FpiapiGatewayOsuuspankki extends FpiapiGateway {
     $mac = implode('', $fields) . $this->configuration['privateKey'];
     $mac = strtoupper(md5($mac));
      
-    return $mac == $params['TARKISTE'];
+    return strcmp($mac, $params['TARKISTE']) === 0;
 
   }
   

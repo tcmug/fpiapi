@@ -25,9 +25,26 @@ $banks = array(
     "version" => 4,
   ),
   
-  "aktiasppop" => array(
+  "aktia" => array(
+    "version" => "010", // Always this
+    "publicKey" => "1111111111111",
+    "privateKey" => "1234567890123456789012345678901234567890123456789012345678901234",
+    "accountName" => "Testiverkkokauppa"
+  ),
+  
+
+  "sp" => array(
+    "version" => "003", // or 002
     "publicKey" => "0000000000",
     "privateKey" => "11111111111111111111"
+  ),
+  
+  "pop" => array(
+    "version" => "003", // or 002
+    "publicKey" => "0000000000",
+    "privateKey" => "11111111111111111111",
+    "accountNumber" => "448710-126", // not required
+    "accountName" => 'testitili' // not required
   ),
   
   "osuuspankki" => array(
@@ -96,7 +113,12 @@ $t->setReferencePaddingLength(0);
 
 $gateway = FpiapiFactory::getGateway($gatewayName);
 
-$host = 'http://' . $_SERVER['HTTP_HOST'] . '/';
+$host = 'http://' . $_SERVER['HTTP_HOST'] . '/test.php';
+
+// Aktia uses a different URL for testing.
+if ($gatewayName == 'aktia') {
+  $gateway->setPaymentUrl('https://auth.aktia.fi/vmtest');
+}
 
 $gateway->setCurrency("EUR");
 $gateway->setConfiguration($banks[$gatewayName]);

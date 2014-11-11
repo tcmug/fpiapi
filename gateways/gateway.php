@@ -52,6 +52,14 @@ class FpiapiGateway {
   }
   
   /**
+   * setPaymentUrl
+   * set the forms post URL
+   */
+  public function setPaymentUrl($url) {
+    $this->postUrl = $url;
+  }
+
+  /**
    * getPaymentUrl
    * retreive the query url 
    */

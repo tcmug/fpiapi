@@ -7,12 +7,14 @@ Used by:
   http://drupal.org/project/uc_finnish_payments
   http://drupal.org/project/commerce_finnish_payments
 
-Initial development was sponsored by Mearra.
+Initial development was sponsored by Mearra (which is today part of Wunderkraut)
 
 
 Supported gateways:
 
-  Aktia / Säästöpankki / Paikallisosuuspankki
+  Aktia
+  Säästöpankki
+  POP Pankki
   Ålandsbanken
   Handelsbanken
   Luottokunta
@@ -37,7 +39,8 @@ Supported actions:
 
 
 
-For testing use the accounts listed below. See test.php for usage example.
+For testing use the accounts listed below. PLEASE SEE test.php for usage example.
+
 
 
 Custom:
@@ -90,6 +93,8 @@ Custom:
 Samlink:
 
   No support for selectable languages or due dates (only express payments are supported).
+
+  Versions 002 and 003 are supported. Aktia uses version 010 only.
   
   Handelsbanken
   
@@ -101,7 +106,22 @@ Samlink:
       proper ids and passwords provided in the process
    
    
-  Aktia/SP/POP
+  Aktia
+
+    For Aktia you must use version 010.
+
+    Receiver (owner)
+      public: 0000000000
+      private: 11111111111111111111
+  
+    Client:  
+      id: 12345678
+      password: 123456
+      confirmation: 1234
+
+  Säästöpankki
+
+    For Säästöpankki you can use either versions 002 or 003.
   
     Receiver (owner)
       public: 0000000000
@@ -109,6 +129,17 @@ Samlink:
   
     Client:  
       proper ids and passwords provided in the process
+
+  POP Pankki
+
+    For POP you can use either versions 002 or 003.
+  
+    Receiver (owner)
+      public: 0000000000
+      private: 11111111111111111111
+  
+    Client:  
+      proper ids and passwords provided in the process.
 
 
 Crosskey:

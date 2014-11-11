@@ -68,7 +68,7 @@ class FpiapiGatewayLuottokunta extends FpiapiGateway {
         $mac_str = implode("&", $fields);
         $mac     = hash('sha256', $mac_str);
 
-        return strtolower($mac) == strtolower($params['LKMAC']);
+        return strcmp(strtolower($mac), strtolower($params['LKMAC'])) === 0;
     }
 
     protected function getFieldArrayForResponse() {

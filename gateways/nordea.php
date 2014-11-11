@@ -87,7 +87,7 @@ class FpiapiGatewayNordea extends FpiapiGateway {
     $mac = implode('&', $fields) . "&" . $this->configuration['privateKey'] . "&";
     $mac = strtoupper(md5($mac));
      
-    return $mac == $params['RETURN_MAC'];
+    return strcmp($mac, $params['RETURN_MAC']) === 0;
 
   }
  

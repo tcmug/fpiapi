@@ -20,33 +20,81 @@ class FpiapiGatewaySamlink extends FpiapiGateway {
     $this->hasQueryAbility = true;
     $this->hasRefundAbility = false;
   }
-  
+
   /**
    * getPaymentFields()
    * @see fpiapi/gateways/FpiapiGateway::getPaymentFields()
    */
   public function getPaymentFields() {
             
-    $fields = array(
-      'NET_VERSION'   => "002",
-      'NET_STAMP'     => $this->transaction->getUid(),
-      'NET_SELLER_ID' => $this->configuration['publicKey'],
-      'NET_AMOUNT'    => $this->transaction->getSum(),
-      'NET_REF'       => $this->transaction->getReferenceNumber(),
-      'NET_DATE'      => 'EXPRESS',
-      'NET_CUR'       => $this->getCurrency(),
-      'NET_RETURN'    => $this->getReturnUrl(),
-      'NET_CANCEL'    => $this->getErrorUrl(),
-      'NET_REJECT'    => $this->getErrorUrl()
-    );
+    switch ($this->configuration['version']) {
+      case '002':
+        $fields = array(
+          'NET_VERSION'   => "002",
+          'NET_STAMP'     => $this->transaction->getUid(),
+          'NET_SELLER_ID' => $this->configuration['publicKey'],
+          'NET_AMOUNT'    => $this->transaction->getSum(),
+          'NET_REF'       => $this->transaction->getReferenceNumber(),
+          'NET_DATE'      => 'EXPRESS',
+          'NET_CUR'       => $this->getCurrency(),
+          'NET_RETURN'    => $this->getReturnUrl(),
+          'NET_CANCEL'    => $this->getErrorUrl(),
+          'NET_REJECT'    => $this->getErrorUrl()
+        );
+        $algorithm = 'md5';
+      break;
+
+      case '010': // Specific to aktia
+        $fields = array(
+          'NET_VERSION'   => "010",
+          'NET_STAMP'     => $this->transaction->getUid(),
+          'NET_SELLER_ID' => $this->configuration['publicKey'],
+          'NET_AMOUNT'    => $this->transaction->getSum(),
+          'NET_REF'       => $this->transaction->getReferenceNumber(),
+          'NET_DATE'      => 'EXPRESS',
+          'NET_CUR'       => $this->getCurrency(),
+          'NET_RETURN'    => $this->getReturnUrl(),
+          'NET_CANCEL'    => $this->getErrorUrl(),
+          'NET_REJECT'    => $this->getErrorUrl(),
+          'NET_ALG'       => '03',
+          'NET_KEYVERS'   => '0001'
+        );
+        $algorithm = 'sha256';
+      break;
+
+      case '003': // Also the default.
+      default:
+        $fields = array(
+          'NET_VERSION'   => "003",
+          'NET_STAMP'     => $this->transaction->getUid(),
+          'NET_SELLER_ID' => $this->configuration['publicKey'],
+          'NET_AMOUNT'    => $this->transaction->getSum(),
+          'NET_REF'       => $this->transaction->getReferenceNumber(),
+          'NET_DATE'      => 'EXPRESS',
+          'NET_CUR'       => $this->getCurrency(),
+          'NET_RETURN'    => $this->getReturnUrl(),
+          'NET_CANCEL'    => $this->getErrorUrl(),
+          'NET_REJECT'    => $this->getErrorUrl(),
+          'NET_ALG'       => '03',
+        );
+        $algorithm = 'sha256';
+      break;
+    }
 
     // Calculate mac accordingly...
     $mac = implode('&', $fields) . "&" . $this->configuration['privateKey'] . "&";
-    $mac = strtolower(md5($mac));
+    $mac = strtoupper(hash($algorithm, $mac, FALSE));
     
-    $fields['NET_MAC']     = $mac;
-    $fields['NET_CONFIRM'] = "YES";
-    //$fields['NET_LANG']    = $codes[$this->getLanguage()];
+    if (isset($this->configuration['accountNumber'])) {
+      $fields['NET_SELLER_ACC'] = $this->configuration['accountNumber'];
+    }
+
+    if (isset($this->configuration['accountName'])) {
+      $fields['NET_NAME'] = $this->configuration['accountName'];
+    }
+
+    $fields['NET_MAC']        = $mac;
+    $fields['NET_CONFIRM']    = "YES";
    
     return $fields;
 
@@ -61,23 +109,59 @@ class FpiapiGatewaySamlink extends FpiapiGateway {
     
     $params = &$_REQUEST;
       
-    $fields = array(
-      isset($params['NET_RETURN_VERSION']) ? $params['NET_RETURN_VERSION'] : NULL,
-      $this->transaction->getUid(),
-      $this->transaction->getReferenceNumber(),
-      isset($params['NET_RETURN_PAID']) ? $params['NET_RETURN_PAID'] : NULL,
-      $this->configuration['privateKey']
-    );
+    if (!isset($params['NET_RETURN_VERSION'])) {
+      return FALSE;
+    }
+
+    switch ($params['NET_RETURN_VERSION']) {
+      case '002':
+        $fields = array(
+          isset($params['NET_RETURN_VERSION']) ? $params['NET_RETURN_VERSION'] : NULL,
+          $this->transaction->getUid(),
+          $this->transaction->getReferenceNumber(),
+          isset($params['NET_RETURN_PAID']) ? $params['NET_RETURN_PAID'] : NULL,
+          $this->configuration['privateKey']
+        );
+        $algorithm = 'md5';
+      break;
+
+      case '010': // Specific to Aktia
+        $fields = array(
+          isset($params['NET_RETURN_VERSION']) ? $params['NET_RETURN_VERSION'] : NULL,
+          isset($params['NET_ALG']) ? $params['NET_ALG'] : NULL,
+          $this->transaction->getUid(),
+          $this->transaction->getReferenceNumber(),
+          isset($params['NET_RETURN_PAID']) ? $params['NET_RETURN_PAID'] : NULL,
+          isset($params['NET_KEYVERS']) ? $params['NET_KEYVERS'] : NULL,
+          $this->configuration['privateKey']
+        );      
+        $algorithm = 'sha256';
+      break;
+
+      case '003':
+        $fields = array(
+          isset($params['NET_RETURN_VERSION']) ? $params['NET_RETURN_VERSION'] : NULL,
+          $this->transaction->getUid(),
+          $this->transaction->getReferenceNumber(),
+          isset($params['NET_RETURN_PAID']) ? $params['NET_RETURN_PAID'] : NULL,
+          isset($params['NET_ALG']) ? $params['NET_ALG'] : NULL,
+          $this->configuration['privateKey']
+        );      
+        $algorithm = 'sha256';
+      break;
+
+      default:
+        return FALSE;
+    }
     
     if (!$this->checkFields($fields)) {
       return false;
     }   
-    
-    $mac = implode('&', $fields) . '&';
 
-    $mac = strtoupper(md5($mac));
-     
-    return $mac == $params['NET_RETURN_MAC'];
+    $mac = implode('&', $fields) . '&';
+    $mac = strtoupper(hash($algorithm, $mac, FALSE));
+
+    return strcmp($mac, $params['NET_RETURN_MAC']) === 0;
 
   }
   

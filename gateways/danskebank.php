@@ -88,7 +88,7 @@ class FpiapiGatewayDanskebank extends FpiapiGateway {
     $mac = $this->configuration['privateKey'] . '&' . implode('&', $fields) . '&';
     $mac = strtolower(hash('sha256', $mac));
 
-    return $mac == $params['TARKISTE'];
+    return strcmp($mac, $params['TARKISTE']) === 0;
 
   }
   

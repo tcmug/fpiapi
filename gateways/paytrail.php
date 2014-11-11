@@ -84,7 +84,7 @@ class FpiapiGatewayPaytrail extends FpiapiGateway {
     $mac = implode('|', $fields) . '|' . $this->configuration['privateKey'];
     $mac = strtoupper(md5($mac));
      
-    return $mac == $params['RETURN_AUTHCODE'];
+    return strcmp($mac, $params['RETURN_AUTHCODE']) === 0;
   }
   
 }
