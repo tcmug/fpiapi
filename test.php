@@ -145,6 +145,7 @@ try {
 } 
 
 ?>
+<h2><?php echo $gateway->getName();?></h2> <img src='<?php print $gateway->getImageUrl();?>'>
 <form action="<?php print $gateway->getPaymentUrl(); ?>" method="POST">
 <?php 
 $fields = $gateway->getPaymentFields();

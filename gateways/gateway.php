@@ -113,6 +113,12 @@ class FpiapiGateway {
     return array();
   }  
 
+  /**
+   * Fetch an image for the site
+   */
+  public function getImageUrl() {
+    return 'images/' . get_class($this) . '.gif';
+  }
   
   /**
    * getName
