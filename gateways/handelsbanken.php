@@ -14,8 +14,8 @@ class FpiapiGatewayHandelsbanken extends FpiapiGatewaySamlink {
   public function __construct() {
     parent::__construct();
     $this->name = "Handelsbanken";
-    $this->postUrl = 'https://verkkomaksu.inetpankki.samlink.fi/vm/SHBlogin.html';
-    $this->queryUrl = 'https://verkkomaksu.inetpankki.samlink.fi/vm/SHBkysely.html'; 
+    $this->postUrl = 'https://verkkomaksu.handelsbanken.fi/vm/login.html';
+    $this->queryUrl = 'https://verkkomaksu.handelsbanken.fi/vm/kysely.html'; 
     
   }
   
