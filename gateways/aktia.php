@@ -3,7 +3,7 @@
  * Gateway for Aktia
  */
 
-require "samlink.php";
+require_once "samlink.php";
 
 class FpiapiGatewayAktia extends FpiapiGatewaySamlink {
   

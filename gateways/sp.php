@@ -3,9 +3,9 @@
  * Gateway for Säästöpankki
  */
 
-require "samlink.php";
+require_once "samlink.php";
 
-class FpiapiGatewaySP extends FpiapiGatewaySamlink {
+class FpiapiGatewaySp extends FpiapiGatewaySamlink {
   
   /**
    * Constructor

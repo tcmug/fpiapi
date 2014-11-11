@@ -3,7 +3,7 @@
  * Gateway for POP Pankki
  */
 
-require "samlink.php";
+require_once "samlink.php";
 
 class FpiapiGatewayPOP extends FpiapiGatewaySamlink {
   

@@ -7,8 +7,8 @@
  *
  */
 
-require("exception.php");
-require("transaction.php");
+require_once "exception.php";
+require_once "transaction.php";
 
 
 class FpiapiFactory {
@@ -45,8 +45,6 @@ class FpiapiFactory {
     return new $className();
 
   }
-
-
 
 
 }
